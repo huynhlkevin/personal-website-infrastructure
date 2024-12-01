@@ -1,5 +1,10 @@
 terraform {
   required_providers {
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.0"
+    }
+
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
@@ -179,7 +184,7 @@ resource "aws_dynamodb_resource_policy" "visitor" {
         "Sid"    = "Statement1",
         "Effect" = "Allow",
         "Principal" = {
-          "AWS" = "arn:aws:iam::864899855377:role/service-role/addVisitor-role-y9zxqpuh"
+          "AWS" = aws_iam_role.visitor_lambda.arn
         },
         "Action" = [
           "dynamodb:GetItem",
@@ -263,7 +268,30 @@ resource "aws_api_gateway_usage_plan_key" "visitor" {
 
 resource "aws_lambda_permission" "visitor_rest_api" {
   action        = "lambda:InvokeFunction"
-  function_name = "addVisitor"
+  function_name = aws_lambda_function.visitor.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.visitor.execution_arn}/*/POST/"
+}
+
+resource "aws_iam_role" "visitor_lambda" {
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "lambda.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_lambda_function" "visitor" {
+  function_name = "updateVisitorCounter"
+  role          = aws_iam_role.visitor_lambda.arn
+  filename      = "lambda_function_payload.zip"
+  handler       = "update_visitor_counter.lambda_handler"
+  runtime       = "python3.13"
 }
