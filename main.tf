@@ -158,3 +158,38 @@ resource "cloudflare_ruleset" "redirects" {
 resource "cloudflare_zone_dnssec" "dnssec" {
   zone_id = var.CLOUDFLARE_ZONE_ID
 }
+
+resource "aws_dynamodb_table" "visitor" {
+  billing_mode = "PAY_PER_REQUEST"
+  name         = "visitor"
+  hash_key     = "key"
+
+  attribute {
+    name = "key"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_resource_policy" "visitor" {
+  resource_arn = aws_dynamodb_table.visitor.arn
+  policy = jsonencode({
+    "Version" = "2012-10-17",
+    "Statement" = [
+      {
+        "Sid"    = "Statement1",
+        "Effect" = "Allow",
+        "Principal" = {
+          "AWS" = "arn:aws:iam::864899855377:role/service-role/addVisitor-role-y9zxqpuh"
+        },
+        "Action" = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem"
+        ],
+        "Resource" = [
+          aws_dynamodb_table.visitor.arn
+        ]
+      }
+    ]
+  })
+}
