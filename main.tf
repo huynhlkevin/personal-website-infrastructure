@@ -148,7 +148,7 @@ resource "cloudflare_ruleset" "redirects" {
       from_value {
         status_code = 301
         target_url {
-          expression = "wildcard_replace(http.request.full_uri, r\"https://${var.DOMAIN_NAME}/*\", r\"https://www.${var.DOMAIN_NAME}/${1}\")"
+          expression = "wildcard_replace(http.request.full_uri, r\"https://${var.DOMAIN_NAME}/*\", r\"https://www.${var.DOMAIN_NAME}/$${1}\")"
         }
       }
     }
