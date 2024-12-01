@@ -193,3 +193,77 @@ resource "aws_dynamodb_resource_policy" "visitor" {
     ]
   })
 }
+
+resource "aws_api_gateway_rest_api" "visitor" {
+  name = "My REST API"
+  body = data.template_file.visitor_rest_api.rendered
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
+resource "aws_api_gateway_deployment" "visitor" {
+  rest_api_id = aws_api_gateway_rest_api.visitor.id
+
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.visitor.body))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "visitor" {
+  rest_api_id   = aws_api_gateway_rest_api.visitor.id
+  stage_name    = "visit"
+  deployment_id = aws_api_gateway_deployment.visitor.id
+}
+
+resource "aws_api_gateway_method_settings" "visitor" {
+  rest_api_id = aws_api_gateway_rest_api.visitor.id
+  stage_name  = aws_api_gateway_stage.visitor.stage_name
+  method_path = "*/*"
+
+  settings {
+    throttling_burst_limit = 50
+    throttling_rate_limit  = 100
+  }
+}
+
+resource "aws_api_gateway_api_key" "visitor" {
+  name = "Visitor"
+}
+
+resource "aws_api_gateway_usage_plan" "visitor" {
+  name = "Visitor"
+
+  api_stages {
+    api_id = aws_api_gateway_rest_api.visitor.id
+    stage  = aws_api_gateway_stage.visitor.stage_name
+  }
+
+  quota_settings {
+    limit  = 450000
+    period = "MONTH"
+  }
+
+  throttle_settings {
+    burst_limit = 50
+    rate_limit  = 100
+  }
+}
+
+resource "aws_api_gateway_usage_plan_key" "visitor" {
+  key_id        = aws_api_gateway_api_key.visitor.id
+  key_type      = "API_KEY"
+  usage_plan_id = aws_api_gateway_usage_plan.visitor.id
+}
+
+resource "aws_lambda_permission" "visitor_rest_api" {
+  action        = "lambda:InvokeFunction"
+  function_name = "addVisitor"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.visitor.execution_arn}/*/POST/"
+}
