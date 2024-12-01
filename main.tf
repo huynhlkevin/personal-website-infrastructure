@@ -344,7 +344,7 @@ resource "aws_iam_role_policy" "frontend_automation" {
           "s3:PutObject",
           "s3:DeleteObject"
         ],
-        "Resource" : "arn:aws:s3:::huynhlkevin.com/*"
+        "Resource" : "arn:aws:s3:::${aws_s3_bucket.bucket.id}/*"
       },
       {
         "Sid" : "VisualEditor1",
@@ -352,7 +352,7 @@ resource "aws_iam_role_policy" "frontend_automation" {
         "Action" : [
           "s3:ListBucket"
         ],
-        "Resource" : "arn:aws:s3:::huynhlkevin.com"
+        "Resource" : "arn:aws:s3:::${aws_s3_bucket.bucket.id}"
       }
     ]
   })
