@@ -154,3 +154,7 @@ resource "cloudflare_ruleset" "redirects" {
     }
   }
 }
+
+resource "cloudflare_zone_dnssec" "dnssec" {
+  zone_id = var.CLOUDFLARE_ZONE_ID
+}
