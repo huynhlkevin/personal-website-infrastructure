@@ -46,20 +46,20 @@ resource "aws_s3_bucket" "bucket" {
 resource "aws_s3_bucket_policy" "cloudfront_oac_policy" {
   bucket = aws_s3_bucket.bucket.id
   policy = jsonencode({
-    "Version" = "2008-10-17",
-    "Id"      = "PolicyForCloudFrontPrivateContent",
-    "Statement" = [
+    "Version" : "2008-10-17",
+    "Id" : "PolicyForCloudFrontPrivateContent",
+    "Statement" : [
       {
-        "Sid"    = "AllowCloudFrontServicePrincipal",
-        "Effect" = "Allow",
-        "Principal" = {
-          "Service" = "cloudfront.amazonaws.com"
+        "Sid" : "AllowCloudFrontServicePrincipal",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "cloudfront.amazonaws.com"
         },
-        "Action"   = "s3:GetObject",
-        "Resource" = "arn:aws:s3:::${aws_s3_bucket.bucket.id}/*",
-        "Condition" = {
-          "StringEquals" = {
-            "AWS:SourceArn" = aws_cloudfront_distribution.cloudfront.arn
+        "Action" : "s3:GetObject",
+        "Resource" : "arn:aws:s3:::${aws_s3_bucket.bucket.id}/*",
+        "Condition" : {
+          "StringEquals" : {
+            "AWS:SourceArn" : aws_cloudfront_distribution.cloudfront.arn
           }
         }
       }
@@ -178,20 +178,20 @@ resource "aws_dynamodb_table" "visitor" {
 resource "aws_dynamodb_resource_policy" "visitor" {
   resource_arn = aws_dynamodb_table.visitor.arn
   policy = jsonencode({
-    "Version" = "2012-10-17",
-    "Statement" = [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid"    = "Statement1",
-        "Effect" = "Allow",
-        "Principal" = {
-          "AWS" = aws_iam_role.visitor_lambda.arn
+        "Sid" : "Statement1",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : aws_iam_role.visitor_lambda.arn
         },
-        "Action" = [
+        "Action" : [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem"
         ],
-        "Resource" = [
+        "Resource" : [
           aws_dynamodb_table.visitor.arn
         ]
       }
