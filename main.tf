@@ -14,6 +14,11 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
   required_version = "~> 1.10"
 
@@ -164,136 +169,18 @@ resource "cloudflare_zone_dnssec" "dnssec" {
   zone_id = var.CLOUDFLARE_ZONE_ID
 }
 
-resource "aws_dynamodb_table" "visitor" {
-  billing_mode = "PAY_PER_REQUEST"
-  name         = "visitor"
-  hash_key     = "key"
+module "visitor_counter_backend" {
+  source = "./modules/visitor-counter-backend"
 
-  attribute {
-    name = "key"
-    type = "S"
-  }
-}
-
-resource "aws_dynamodb_resource_policy" "visitor" {
-  resource_arn = aws_dynamodb_table.visitor.arn
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "Statement1",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : aws_iam_role.visitor_lambda.arn
-        },
-        "Action" : [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem"
-        ],
-        "Resource" : [
-          aws_dynamodb_table.visitor.arn
-        ]
-      }
-    ]
-  })
-}
-
-resource "aws_api_gateway_rest_api" "visitor" {
-  name = "My REST API"
-  body = data.template_file.visitor_rest_api.rendered
-
-  endpoint_configuration {
-    types = ["REGIONAL"]
-  }
-}
-
-resource "aws_api_gateway_deployment" "visitor" {
-  rest_api_id = aws_api_gateway_rest_api.visitor.id
-
-  triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.visitor.body))
+  lambda_code = {
+    path    = "./resources/lambda/update_visitor_counter.py"
+    handler = "update_visitor_counter.lambda_handler"
   }
 
-  lifecycle {
-    create_before_destroy = true
+  rest_api = {
+    path                        = "./resources/apigateway/oas30.json.tpl"
+    access_control_allow_origin = "https://www.${var.DOMAIN_NAME}"
   }
-}
-
-resource "aws_api_gateway_stage" "visitor" {
-  rest_api_id   = aws_api_gateway_rest_api.visitor.id
-  stage_name    = "visit"
-  deployment_id = aws_api_gateway_deployment.visitor.id
-}
-
-resource "aws_api_gateway_method_settings" "visitor" {
-  rest_api_id = aws_api_gateway_rest_api.visitor.id
-  stage_name  = aws_api_gateway_stage.visitor.stage_name
-  method_path = "*/*"
-
-  settings {
-    throttling_burst_limit = 50
-    throttling_rate_limit  = 100
-  }
-}
-
-resource "aws_api_gateway_api_key" "visitor" {
-  name = "Visitor"
-}
-
-resource "aws_api_gateway_usage_plan" "visitor" {
-  name = "Visitor"
-
-  api_stages {
-    api_id = aws_api_gateway_rest_api.visitor.id
-    stage  = aws_api_gateway_stage.visitor.stage_name
-  }
-
-  quota_settings {
-    limit  = 450000
-    period = "MONTH"
-  }
-
-  throttle_settings {
-    burst_limit = 50
-    rate_limit  = 100
-  }
-}
-
-resource "aws_api_gateway_usage_plan_key" "visitor" {
-  key_id        = aws_api_gateway_api_key.visitor.id
-  key_type      = "API_KEY"
-  usage_plan_id = aws_api_gateway_usage_plan.visitor.id
-}
-
-resource "aws_lambda_permission" "visitor_rest_api" {
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.visitor.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.visitor.execution_arn}/*/POST/"
-}
-
-resource "aws_iam_role" "visitor_lambda" {
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "lambda.amazonaws.com"
-        },
-        "Action" : "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_lambda_function" "visitor" {
-  function_name = "updateVisitorCounter"
-  role          = aws_iam_role.visitor_lambda.arn
-  filename      = "lambda_function_payload.zip"
-  handler       = "update_visitor_counter.lambda_handler"
-  runtime       = "python3.13"
 }
 
 module "frontend_automation" {

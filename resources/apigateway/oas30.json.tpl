@@ -1,9 +1,5 @@
 {
   "openapi" : "3.0.1",
-  "info" : {
-    "title" : "",
-    "version" : "${api_version}"
-  },
   "paths" : {
     "/" : {
       "post" : {
