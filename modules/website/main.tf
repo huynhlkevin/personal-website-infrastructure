@@ -13,7 +13,8 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.domain_name
+  bucket        = var.domain_name
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_policy" "cloudfront_oac_policy" {
