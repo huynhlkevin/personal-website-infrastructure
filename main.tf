@@ -35,6 +35,11 @@ provider "aws" {
   region = "us-west-1"
 }
 
+provider "aws" {
+  alias  = "east"
+  region = "us-east-1"
+}
+
 module "website" {
   source             = "./modules/website"
   domain_name        = var.DOMAIN_NAME
