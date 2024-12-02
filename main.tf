@@ -170,7 +170,8 @@ resource "cloudflare_zone_dnssec" "dnssec" {
 }
 
 module "visitor_counter_backend" {
-  source = "./modules/visitor-counter-backend"
+  source                      = "./modules/visitor-counter-backend"
+  access_control_allow_origin = "https://www.${var.DOMAIN_NAME}"
 
   lambda_code = {
     path    = "./resources/lambda/update_visitor_counter.py"
@@ -178,8 +179,7 @@ module "visitor_counter_backend" {
   }
 
   rest_api = {
-    path                        = "./resources/apigateway/oas30.json.tpl"
-    access_control_allow_origin = "https://www.${var.DOMAIN_NAME}"
+    path = "./resources/apigateway/oas30.json.tpl"
   }
 }
 
