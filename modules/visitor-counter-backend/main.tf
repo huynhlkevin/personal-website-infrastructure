@@ -140,7 +140,7 @@ resource "aws_lambda_function" "visitor" {
   filename         = data.archive_file.update_visitor_counter.output_path
   handler          = var.lambda_code.handler
   runtime          = "python3.13"
-  source_code_hash = filebase64sha256(data.archive_file.update_visitor_counter.output_path)
+  source_code_hash = data.archive_file.update_visitor_counter.output_base64sha256
 
   environment {
     variables = {
