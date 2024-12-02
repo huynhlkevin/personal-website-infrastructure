@@ -135,11 +135,12 @@ resource "aws_iam_role" "visitor_lambda" {
 resource "random_pet" "lambda_function" {}
 
 resource "aws_lambda_function" "visitor" {
-  function_name = random_pet.lambda_function.id
-  role          = aws_iam_role.visitor_lambda.arn
-  filename      = "lambda_function_payload.zip"
-  handler       = var.lambda_code.handler
-  runtime       = "python3.13"
+  function_name    = random_pet.lambda_function.id
+  role             = aws_iam_role.visitor_lambda.arn
+  filename         = data.archive_file.update_visitor_counter.output_path
+  handler          = var.lambda_code.handler
+  runtime          = "python3.13"
+  source_code_hash = data.archive_file.update_visitor_counter.output_base64sha256
 
   environment {
     variables = {
