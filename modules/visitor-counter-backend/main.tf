@@ -140,6 +140,13 @@ resource "aws_lambda_function" "visitor" {
   filename      = "lambda_function_payload.zip"
   handler       = var.lambda_code.handler
   runtime       = "python3.13"
+
+  environment {
+    variables = {
+      access_control_allow_origin = var.access_control_allow_origin
+      visitor_table_name          = aws_dynamodb_table.visitor.id
+    }
+  }
 }
 
 data "template_file" "visitor_rest_api" {
@@ -147,7 +154,7 @@ data "template_file" "visitor_rest_api" {
 
   vars = {
     lambda_arn                  = aws_lambda_function.visitor.arn
-    access_control_allow_origin = var.rest_api.access_control_allow_origin
+    access_control_allow_origin = var.access_control_allow_origin
   }
 }
 

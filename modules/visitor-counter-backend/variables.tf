@@ -9,7 +9,11 @@ variable "lambda_code" {
 variable "rest_api" {
   description = "REST API code parameters"
   type = object({
-    path                        = string
-    access_control_allow_origin = string
+    path = string
   })
+}
+
+variable "access_control_allow_origin" {
+  description = "Allow resource access to this origin"
+  type        = string
 }

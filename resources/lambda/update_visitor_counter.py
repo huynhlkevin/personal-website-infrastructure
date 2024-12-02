@@ -1,8 +1,9 @@
-import json
 import boto3
+import json
+import os
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("visitor")
+table = dynamodb.Table(os.environ["visitor_table_name"])
 
 def lambda_handler(event, context):
 
@@ -15,7 +16,7 @@ def lambda_handler(event, context):
         "statusCode": 200,
         "headers": {
             "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": "https://www.huynhlkevin.com",
+            "Access-Control-Allow-Origin": os.environ["access_control_allow_origin"],
             "Access-Control-Allow-Methods": "POST"
         },
         "body": json.dumps({
