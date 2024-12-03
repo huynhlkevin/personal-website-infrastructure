@@ -3,8 +3,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
+resource "random_pet" "bucket" {}
+
 resource "aws_s3_bucket" "bucket" {
-  bucket        = var.domain_name
+  bucket        = random_pet.bucket.id
   force_destroy = true
 }
 
