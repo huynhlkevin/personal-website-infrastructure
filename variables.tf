@@ -1,10 +1,9 @@
 variable "CLOUDFLARE_ZONE_ID" {
-  description = "Cloudflare domain zone id. Value is set in Terraform cloud as a workspace environmental variable."
+  description = "Cloudflare domain zone id"
   type        = string
 }
 
-variable "domain_name" {
+variable "DOMAIN_NAME" {
   description = "Domain name"
   type        = string
-  default     = "huynhlkevin.com"
 }
