@@ -30,7 +30,7 @@ resource "aws_s3_bucket_policy" "cloudfront_oac_policy" {
 }
 
 resource "aws_cloudfront_distribution" "cloudfront" {
-  aliases             = ["*.${var.domain_name}"]
+  aliases             = var.certificate_arn == null ? null : ["*.${var.domain_name}"]
   default_root_object = "index.html"
   enabled             = true
 
