@@ -1,5 +1,10 @@
 terraform {
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+
     cloudflare = {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
@@ -8,10 +13,10 @@ terraform {
 }
 
 resource "cloudflare_record" "cert_validation_record" {
-  name    = var.certificate_validation.name
+  name    = trimsuffix(one(aws_acm_certificate.cert.domain_validation_options).resource_record_name, ".")
   type    = "CNAME"
   zone_id = var.cloudflare_zone_id
-  content = var.certificate_validation.value
+  content = trimsuffix(one(aws_acm_certificate.cert.domain_validation_options).resource_record_value, ".")
 }
 
 resource "cloudflare_record" "record" {
@@ -46,4 +51,13 @@ resource "cloudflare_ruleset" "redirects" {
 
 resource "cloudflare_zone_dnssec" "dnssec" {
   zone_id = var.cloudflare_zone_id
+}
+
+resource "aws_acm_certificate" "cert" {
+  domain_name       = "*.${var.domain_name}"
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }

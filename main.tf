@@ -23,11 +23,7 @@ terraform {
   required_version = "~> 1.10"
 
   cloud {
-    organization = "huynhlkevin"
 
-    workspaces {
-      name = "personal-website-infrastructure"
-    }
   }
 }
 
@@ -35,14 +31,20 @@ provider "aws" {
   region = "us-west-1"
 }
 
+provider "aws" {
+  alias  = "east"
+  region = "us-east-1"
+}
+
 module "website" {
-  source      = "./modules/website"
-  domain_name = var.domain_name
+  source          = "./modules/website"
+  domain_name     = var.DOMAIN_NAME
+  certificate_arn = try(module.dns_configuration[0].certificate_arn, null)
 }
 
 module "visitor_counter_backend" {
   source                      = "./modules/visitor-counter-backend"
-  access_control_allow_origin = "https://www.${var.domain_name}"
+  access_control_allow_origin = "https://www.${var.DOMAIN_NAME}"
 
   lambda_code = {
     path    = "./resources/lambda/update_visitor_counter.py"
@@ -62,13 +64,16 @@ module "frontend_automation" {
   bucket_id           = module.website.bucket_id
 }
 
-module "cloudflare" {
-  source             = "./modules/cloudflare"
+module "dns_configuration" {
+  count  = var.CLOUDFLARE_ZONE_ID == "" ? 0 : 1
+  source = "./modules/dns-configuration"
+  providers = {
+    aws : aws.east
+  }
   cloudflare_zone_id = var.CLOUDFLARE_ZONE_ID
-  domain_name        = var.domain_name
+  domain_name        = var.DOMAIN_NAME
   cnames = {
     "@"   = module.website.cloudfront_domain_name
     "www" = module.website.cloudfront_domain_name
   }
-  certificate_validation = module.website.certification_validation
 }

@@ -12,8 +12,3 @@ variable "cnames" {
   description = "CNAME mappings"
   type        = map(string)
 }
-
-variable "certificate_validation" {
-  description = "Certificate validation resource values"
-  type        = map(string)
-}
