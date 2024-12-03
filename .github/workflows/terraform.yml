@@ -56,7 +56,10 @@ jobs:
       - name: Terraform Output (Development)
         id: output_development
         if: github.event_name == 'pull_request'
-        run: terraform output
+        run: |
+          terraform output cloudfront_domain_name
+          terraform output rest_api_invoke_url
+          terraform output rest_api_key
         env:
           TF_WORKSPACE: ${{ vars.TF_DEVELOPMENT_WORKSPACE }}
 
