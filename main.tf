@@ -59,6 +59,7 @@ module "frontend_automation" {
 }
 
 module "cloudflare" {
+  count              = var.CLOUDFLARE_ZONE_ID == "" ? 0 : 1
   source             = "./modules/cloudflare"
   cloudflare_zone_id = var.CLOUDFLARE_ZONE_ID
   domain_name        = var.DOMAIN_NAME
