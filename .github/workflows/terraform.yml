@@ -43,6 +43,7 @@ jobs:
           terraform output cloudfront_domain_name
           terraform output rest_api_invoke_url
           terraform output rest_api_key
+
   terraform_development_destroy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -61,7 +62,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Destroy
-        run: terraform destroy
+        run: terraform destroy -auto-approve -input=false
 
   terraform_production_deploy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
