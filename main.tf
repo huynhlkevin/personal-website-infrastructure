@@ -39,7 +39,7 @@ provider "aws" {
 module "website" {
   source      = "./modules/website"
   domain_name = var.DOMAIN_NAME
-  certificate_arn = module.cloudflare[0].certificate_arn
+  certificate_arn = module.dns_configuration[0].certificate_arn
 }
 
 module "visitor_counter_backend" {
@@ -64,9 +64,9 @@ module "frontend_automation" {
   bucket_id           = module.website.bucket_id
 }
 
-module "cloudflare" {
+module "dns_configuration" {
   count              = var.CLOUDFLARE_ZONE_ID == "" ? 0 : 1
-  source             = "./modules/cloudflare"
+  source             = "./modules/dns-configuration"
   providers = {
     aws: aws.east
   }
