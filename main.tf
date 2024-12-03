@@ -31,9 +31,15 @@ provider "aws" {
   region = "us-west-1"
 }
 
+provider "aws" {
+  alias  = "east"
+  region = "us-east-1"
+}
+
 module "website" {
   source      = "./modules/website"
   domain_name = var.DOMAIN_NAME
+  certificate_arn = module.cloudflare[0].certificate_arn
 }
 
 module "visitor_counter_backend" {
@@ -61,11 +67,13 @@ module "frontend_automation" {
 module "cloudflare" {
   count              = var.CLOUDFLARE_ZONE_ID == "" ? 0 : 1
   source             = "./modules/cloudflare"
+  providers = {
+    aws: aws.east
+  }
   cloudflare_zone_id = var.CLOUDFLARE_ZONE_ID
   domain_name        = var.DOMAIN_NAME
   cnames = {
     "@"   = module.website.cloudfront_domain_name
     "www" = module.website.cloudfront_domain_name
   }
-  certificate_validation = module.website.certification_validation
 }

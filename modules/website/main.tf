@@ -1,8 +1,3 @@
-provider "aws" {
-  alias  = "east"
-  region = "us-east-1"
-}
-
 resource "random_pet" "bucket" {}
 
 resource "aws_s3_bucket" "bucket" {
@@ -60,7 +55,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.cert.arn
+    acm_certificate_arn      = var.certificate_arn
     minimum_protocol_version = "TLSv1.2_2021"
     ssl_support_method       = "sni-only"
   }
@@ -71,14 +66,4 @@ resource "aws_cloudfront_origin_access_control" "oac" {
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
-}
-
-resource "aws_acm_certificate" "cert" {
-  provider          = aws.east
-  domain_name       = "*.${var.domain_name}"
-  validation_method = "DNS"
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
