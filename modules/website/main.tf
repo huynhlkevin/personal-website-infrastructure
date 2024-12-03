@@ -35,7 +35,7 @@ resource "aws_s3_bucket_policy" "cloudfront_oac_policy" {
 resource "aws_cloudfront_distribution" "cloudfront" {
   aliases             = ["*.${var.domain_name}"]
   default_root_object = "index.html"
-  enabled             = false
+  enabled             = true
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
