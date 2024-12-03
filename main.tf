@@ -39,7 +39,7 @@ provider "aws" {
 module "website" {
   source          = "./modules/website"
   domain_name     = var.DOMAIN_NAME
-  certificate_arn = module.dns_configuration[0].certificate_arn
+  certificate_arn = try(module.dns_configuration[0].certificate_arn, null)
 }
 
 module "visitor_counter_backend" {

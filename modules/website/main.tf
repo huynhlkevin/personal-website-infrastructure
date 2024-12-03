@@ -55,10 +55,10 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = var.certificate_arn == ""
-    acm_certificate_arn            = var.certificate_arn == "" ? null : var.certificate_arn
-    minimum_protocol_version       = var.certificate_arn == "" ? null : "TLSv1.2_2021"
-    ssl_support_method             = var.certificate_arn == "" ? null : "sni-only"
+    cloudfront_default_certificate = var.certificate_arn == null
+    acm_certificate_arn            = var.certificate_arn
+    minimum_protocol_version       = var.certificate_arn == null ? null : "TLSv1.2_2021"
+    ssl_support_method             = var.certificate_arn == null ? null : "sni-only"
   }
 }
 
