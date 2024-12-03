@@ -37,8 +37,8 @@ provider "aws" {
 }
 
 module "website" {
-  source      = "./modules/website"
-  domain_name = var.DOMAIN_NAME
+  source          = "./modules/website"
+  domain_name     = var.DOMAIN_NAME
   certificate_arn = module.dns_configuration[0].certificate_arn
 }
 
@@ -65,10 +65,10 @@ module "frontend_automation" {
 }
 
 module "dns_configuration" {
-  count              = var.CLOUDFLARE_ZONE_ID == "" ? 0 : 1
-  source             = "./modules/dns-configuration"
+  count  = var.CLOUDFLARE_ZONE_ID == "" ? 0 : 1
+  source = "./modules/dns-configuration"
   providers = {
-    aws: aws.east
+    aws : aws.east
   }
   cloudflare_zone_id = var.CLOUDFLARE_ZONE_ID
   domain_name        = var.DOMAIN_NAME
