@@ -27,19 +27,15 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
-        id: fmt
         run: terraform fmt -check
 
       - name: Terraform Init
-        id: init_development
         run: terraform init
 
       - name: Terraform Validate
-        id: validate
         run: terraform validate -no-color
 
       - name: Terraform Apply
-        id: apply_development
         run: terraform apply -auto-approve -input=false
 
       - name: Terraform Output
@@ -62,7 +58,6 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Init
-        id: init_development
         run: terraform init
 
       - name: Terraform Destroy
@@ -83,15 +78,12 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
-        id: fmt
         run: terraform fmt -check
       
       - name: Terraform Init
-        id: init_production
         run: terraform init
 
       - name: Terraform Validate
-        id: validate
         run: terraform validate -no-color
 
       - name: Terraform Apply
