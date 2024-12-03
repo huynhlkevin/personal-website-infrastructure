@@ -67,14 +67,6 @@ jobs:
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Apply (Development) 📖\`${{ steps.apply_development.outcome }}\`
 
-            <details><summary>Show Outcome</summary>
-
-            \`\`\`terraform\n
-            ${process.env.APPLY_DEVELOPMENT}
-            \`\`\`
-
-            </details>
-
             *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
             github.rest.issues.createComment({
