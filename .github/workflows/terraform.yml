@@ -54,7 +54,7 @@ jobs:
           TF_WORKSPACE: ${{ vars.TF_DEVELOPMENT_WORKSPACE }}
 
       - name: Terraform Output
-        run: terraform output -json
+        run: terraform output
 
       - name: Terraform Apply (Production)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
