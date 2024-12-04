@@ -13,3 +13,8 @@ output "rest_api_key" {
   value       = module.visitor_counter_backend.rest_api.api_key
   sensitive   = true
 }
+
+output "bucket_name" {
+  description = "S3 bucket name"
+  value       = module.website.bucket_id
+}
