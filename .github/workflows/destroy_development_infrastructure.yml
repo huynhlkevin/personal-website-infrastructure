@@ -1,0 +1,26 @@
+name: Destroy Development Infrastructure
+
+on:
+  workflow_call:
+
+jobs:
+  destroy_development_infrastructure:
+    runs-on: ubuntu-latest
+    env:
+      TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+      TF_WORKSPACE: ${{ secrets.TF_DEVELOPMENT_WORKSPACE }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -input=false
