@@ -1,4 +1,4 @@
-name: "On Pull Request"
+name: Development
 
 on:
   pull_request:
