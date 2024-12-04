@@ -41,18 +41,18 @@ jobs:
 
       - name: Terraform Output (API Endpoint)
         id: terraform_rest_api_endpoint
-        run: terraform output rest_api_invoke_url -raw
+        run: terraform output -raw rest_api_invoke_url
 
       - name: Terraform Output (API Key)
         id: terraform_rest_api_key
-        run: terraform output rest_api_key -raw
+        run: terraform output -raw rest_api_key
 
       - name: Terraform Output (Bucket name)
         id: terraform_bucket_name
-        run: terraform output bucket_name -raw
+        run: terraform output -raw bucket_name
 
       - name: Terraform Output (CloudFront Domain Name)
-        run: terraform output cloudfront_domain_name -raw
+        run: terraform output -raw cloudfront_domain_name
 
     outputs:
       rest_api_endpoint: ${{ steps.terraform_rest_api_endpoint.outputs.stdout }}
