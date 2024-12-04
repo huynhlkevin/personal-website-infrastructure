@@ -66,6 +66,7 @@ jobs:
       rest_api_endpoint: ${{ needs.terraform_deploy_development.outputs.rest_api_endpoint }}
       rest_api_key: ${{ needs.terraform_deploy_development.outputs.rest_api_key }}
       bucket_name: ${{ needs.terraform_deploy_development.outputs.bucket_name }}
+    secrets: inherit
 
   terraform_destroy_development:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
