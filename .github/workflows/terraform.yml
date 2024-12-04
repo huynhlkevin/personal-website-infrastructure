@@ -46,7 +46,7 @@ jobs:
         id: terraform_rest_api_key
         run: terraform output rest_api_key
 
-      - name: Terraform Output (Bucket)
+      - name: Terraform Output (Bucket name)
         id: terraform_bucket_name
         run: terraform output bucket_name
 
