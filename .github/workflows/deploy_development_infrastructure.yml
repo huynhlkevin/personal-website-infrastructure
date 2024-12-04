@@ -9,15 +9,14 @@ on:
         value: ${{ jobs.deploy_development_infrastructure.outputs.rest_api_key }}
       bucket_name: 
         value: ${{ jobs.deploy_development_infrastructure.outputs.bucket_name }}
-    
-env:
-  TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
 
 jobs:
   deploy_development_infrastructure:
     runs-on: ubuntu-latest
     env:
+      TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
       TF_WORKSPACE: ${{ secrets.TF_DEVELOPMENT_WORKSPACE }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
