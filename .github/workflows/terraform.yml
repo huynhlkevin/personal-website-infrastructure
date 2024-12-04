@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  terraform_development_deploy:
+  terraform_deploy_development:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     env:
@@ -38,29 +38,35 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
 
-      - name: Terraform Output (Invoke URL)
-        id: terraform-rest-api-invoke-url
+      - name: Terraform Output (API Endpoint)
+        id: terraform_rest_api_endpoint
         run: terraform output rest_api_invoke_url
 
       - name: Terraform Output (API Key)
-        id: terraform-rest-api-key
+        id: terraform_rest_api_key
         run: terraform output rest_api_key
 
       - name: Terraform Output (Bucket)
-        id: terraform-bucket-name
+        id: terraform_bucket_name
         run: terraform output bucket_name
-
-      - name: Deploy Frontend
-        uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@create-developer-configuration
-        with:
-          rest_api_endpoint: ${{ steps.terraform-rest-api-invoke-url.outputs.stdout }}
-          rest_api_key: ${{ steps.terraform-rest-api-key.outputs.stdout }}
-          bucket_name: ${{ steps.terraform-bucket-name.outputs.stdout }}
 
       - name: Terraform Output (CloudFront Domain Name)
         run: terraform output cloudfront_domain_name
 
-  terraform_development_destroy:
+    outputs:
+      rest_api_endpoint: ${{ steps.terraform_rest_api_endpoint.outputs.stdout }}
+      rest_api_key: ${{ steps.terraform_rest_api_key.outputs.stdout }}
+      bucket_name: ${{ steps.terraform_bucket_name.outputs.stdout }}
+
+  deploy_frontend:
+    needs: [terraform_deploy_development]
+    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@create-developer-configuration
+    with:
+      rest_api_endpoint: ${{ needs.terraform_deploy_development.outputs.rest_api_endpoint }}
+      rest_api_key: ${{ needs.terraform_deploy_development.outputs.rest_api_key }}
+      bucket_name: ${{ needs.terraform_deploy_development.outputs.bucket_name }}
+
+  terraform_destroy_development:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
@@ -80,7 +86,7 @@ jobs:
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -input=false
 
-  terraform_production_deploy:
+  terraform_deploy_production:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
