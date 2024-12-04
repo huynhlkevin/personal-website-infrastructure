@@ -61,7 +61,7 @@ jobs:
 
   deploy_frontend:
     needs: [terraform_deploy_development]
-    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@create-developer-configuration
+    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@master
     with:
       rest_api_endpoint: ${{ needs.terraform_deploy_development.outputs.rest_api_endpoint }}
       rest_api_key: ${{ needs.terraform_deploy_development.outputs.rest_api_key }}
