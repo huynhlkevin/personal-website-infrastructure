@@ -144,7 +144,7 @@ resource "aws_lambda_function" "visitor" {
 
   environment {
     variables = {
-      access_control_allow_origin = var.access_control_allow_origin
+      access_control_allow_origin = "https://${var.access_control_allow_origin}"
       visitor_table_name          = aws_dynamodb_table.visitor.id
     }
   }
@@ -155,7 +155,7 @@ data "template_file" "visitor_rest_api" {
 
   vars = {
     lambda_arn                  = aws_lambda_function.visitor.arn
-    access_control_allow_origin = var.access_control_allow_origin
+    access_control_allow_origin = "https://${var.access_control_allow_origin}"
   }
 }
 

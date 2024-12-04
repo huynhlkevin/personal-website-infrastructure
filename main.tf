@@ -44,7 +44,7 @@ module "website" {
 
 module "visitor_counter_backend" {
   source                      = "./modules/visitor-counter-backend"
-  access_control_allow_origin = var.DOMAIN_NAME == "" ? module.website.cloudfront_domain_name : "https://www.${var.DOMAIN_NAME}"
+  access_control_allow_origin = var.DOMAIN_NAME == "" ? module.website.cloudfront_domain_name : "www.${var.DOMAIN_NAME}"
 
   lambda_code = {
     path    = "./resources/lambda/update_visitor_counter.py"
