@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  TF_CLOUD_ORGANIZATION: ${{ vars.TF_CLOUD_ORGANIZATION }}
+  TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
 
 permissions:
   id-token: write
@@ -17,7 +17,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     env:
-      TF_WORKSPACE: ${{ vars.TF_DEVELOPMENT_WORKSPACE }}
+      TF_WORKSPACE: ${{ secrets.TF_DEVELOPMENT_WORKSPACE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,7 +71,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
-      TF_WORKSPACE: ${{ vars.TF_DEVELOPMENT_WORKSPACE }}
+      TF_WORKSPACE: ${{ secrets.TF_DEVELOPMENT_WORKSPACE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
-      TF_WORKSPACE: ${{ vars.TF_PRODUCTION_WORKSPACE }}
+      TF_WORKSPACE: ${{ secrets.TF_PRODUCTION_WORKSPACE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
