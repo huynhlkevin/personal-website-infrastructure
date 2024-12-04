@@ -1,0 +1,18 @@
+name: "On Pull Request"
+
+on:
+  pull_request:
+
+jobs:
+  deploy_development_infrastructure:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/deploy_development_infrastructure.yml
+
+  deploy_frontend:
+    needs: [deploy_development_infrastructure]
+    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@master
+    with:
+      rest_api_endpoint: ${{ needs.deploy_development_infrastructure.outputs.rest_api_endpoint }}
+      rest_api_key: ${{ needs.deploy_development_infrastructure.outputs.rest_api_key }}
+      bucket_name: ${{ needs.deploy_development_infrastructure.outputs.bucket_name }}
+    secrets: inherit

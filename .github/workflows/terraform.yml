@@ -3,8 +3,7 @@ name: "Terraform"
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-
+    
 env:
   TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
 
@@ -13,61 +12,6 @@ permissions:
   contents: read
 
 jobs:
-  terraform_deploy_development:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    env:
-      TF_WORKSPACE: ${{ secrets.TF_DEVELOPMENT_WORKSPACE }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-      - name: Terraform Format
-        run: terraform fmt -check
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate -no-color
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
-
-      - name: Terraform Output (API Endpoint)
-        id: terraform_rest_api_endpoint
-        run: terraform output -raw rest_api_invoke_url
-
-      - name: Terraform Output (API Key)
-        id: terraform_rest_api_key
-        run: terraform output -raw rest_api_key
-
-      - name: Terraform Output (Bucket name)
-        id: terraform_bucket_name
-        run: terraform output -raw bucket_name
-
-      - name: Terraform Output (CloudFront Domain Name)
-        run: terraform output -raw cloudfront_domain_name
-
-    outputs:
-      rest_api_endpoint: ${{ steps.terraform_rest_api_endpoint.outputs.stdout }}
-      rest_api_key: ${{ steps.terraform_rest_api_key.outputs.stdout }}
-      bucket_name: ${{ steps.terraform_bucket_name.outputs.stdout }}
-
-  deploy_frontend:
-    needs: [terraform_deploy_development]
-    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@master
-    with:
-      rest_api_endpoint: ${{ needs.terraform_deploy_development.outputs.rest_api_endpoint }}
-      rest_api_key: ${{ needs.terraform_deploy_development.outputs.rest_api_key }}
-      bucket_name: ${{ needs.terraform_deploy_development.outputs.bucket_name }}
-    secrets: inherit
-
   terraform_destroy_development:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
