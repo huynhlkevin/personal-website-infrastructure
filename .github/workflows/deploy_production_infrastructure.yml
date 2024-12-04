@@ -5,6 +5,7 @@ on:
     
 jobs:
   deploy_production_infrastructure:
+    environment: production
     runs-on: ubuntu-latest
     env:
       TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
