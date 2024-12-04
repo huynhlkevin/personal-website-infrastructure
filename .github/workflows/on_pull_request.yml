@@ -15,7 +15,7 @@ jobs:
 
   deploy_frontend:
     needs: [deploy_development_infrastructure]
-    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@master
+    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@edit-workflow
     with:
       rest_api_endpoint: ${{ needs.deploy_development_infrastructure.outputs.rest_api_endpoint }}
       rest_api_key: ${{ needs.deploy_development_infrastructure.outputs.rest_api_key }}
