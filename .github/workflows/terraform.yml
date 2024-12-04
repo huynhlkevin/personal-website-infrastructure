@@ -9,6 +9,7 @@ env:
   TF_CLOUD_ORGANIZATION: ${{ vars.TF_CLOUD_ORGANIZATION }}
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
