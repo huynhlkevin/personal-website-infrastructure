@@ -9,7 +9,7 @@ jobs:
     secrets: inherit
 
   deploy_frontend:
-    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@edit-workflow
+    uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@master
     needs: [deploy_development_infrastructure]
     secrets: inherit
     permissions:
