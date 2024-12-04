@@ -38,11 +38,27 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
 
-      - name: Terraform Output
-        run: |
-          terraform output cloudfront_domain_name
-          terraform output rest_api_invoke_url
-          terraform output rest_api_key
+      - name: Terraform Output (Invoke URL)
+        id: terraform-rest-api-invoke-url
+        run: terraform output rest_api_invoke_url
+
+      - name: Terraform Output (API Key)
+        id: terraform-rest-api-key
+        run: terraform output rest_api_key
+
+      - name: Terraform Output (Bucket)
+        id: terraform-bucket-name
+        run: terraform output bucket_name
+
+      - name: Deploy Frontend
+        uses: huynhlkevin/personal-website/.github/workflows/deploy.yml@create-developer-configuration
+        with:
+          rest_api_endpoint: ${{ steps.terraform-rest-api-invoke-url.outputs.stdout }}
+          rest_api_key: ${{ steps.terraform-rest-api-key.outputs.stdout }}
+          bucket_name: ${{ steps.terraform-bucket-name.outputs.stdout }}
+
+      - name: Terraform Output (CloudFront Domain Name)
+        run: terraform output cloudfront_domain_name
 
   terraform_development_destroy:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
