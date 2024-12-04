@@ -13,10 +13,6 @@ on:
 env:
   TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   deploy_development_infrastructure:
     runs-on: ubuntu-latest
