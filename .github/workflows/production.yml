@@ -12,3 +12,12 @@ jobs:
   deploy_production_infrastructure:
     uses: ./.github/workflows/deploy_production_infrastructure.yml
     secrets: inherit
+
+  deploy_website_content:
+    uses: huynhlkevin/personal-website/.github/workflows/deploy-website-content.yml@master
+    needs: [deploy_production_infrastructure]
+    secrets: inherit
+    permissions:
+      id-token: write
+    with:
+      production: true
