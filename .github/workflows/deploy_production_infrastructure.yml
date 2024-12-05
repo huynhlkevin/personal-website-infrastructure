@@ -5,11 +5,11 @@ on:
     
 jobs:
   deploy_production_infrastructure:
-    environment: production
     runs-on: ubuntu-latest
+    environment: production
     env:
       TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-      TF_WORKSPACE: ${{ secrets.TF_PRODUCTION_WORKSPACE }}
+      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
 
     steps:
       - name: Checkout

@@ -6,9 +6,10 @@ on:
 jobs:
   destroy_development_infrastructure:
     runs-on: ubuntu-latest
+    environment: development
     env:
       TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-      TF_WORKSPACE: ${{ secrets.TF_DEVELOPMENT_WORKSPACE }}
+      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
 
     steps:
       - name: Checkout
