@@ -18,4 +18,4 @@ jobs:
       rest_api_endpoint: ${{ needs.deploy_development_infrastructure.outputs.rest_api_endpoint }}
       rest_api_key: ${{ needs.deploy_development_infrastructure.outputs.rest_api_key }}
       bucket_name: ${{ needs.deploy_development_infrastructure.outputs.bucket_name }}
-    
+      production: false
