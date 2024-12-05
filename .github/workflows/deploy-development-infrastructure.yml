@@ -63,4 +63,4 @@ jobs:
       rest_api_endpoint: ${{ steps.terraform_rest_api_endpoint.outputs.stdout }}
       rest_api_key: ${{ steps.terraform_rest_api_key.outputs.stdout }}
       bucket_name: ${{ steps.terraform_bucket_name.outputs.stdout }}
-      cloudfront_domain_name: ${{ steps.terraform_cloudfront_domain_name.stdout }}
+      cloudfront_domain_name: ${{ steps.terraform_cloudfront_domain_name.outputs.stdout }}

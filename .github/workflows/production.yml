@@ -6,11 +6,11 @@ on:
 
 jobs:
   destroy_development_infrastructure:
-    uses: ./.github/workflows/destroy_development_infrastructure.yml
+    uses: ./.github/workflows/destroy-development-infrastructure.yml
     secrets: inherit
 
   deploy_production_infrastructure:
-    uses: ./.github/workflows/deploy_production_infrastructure.yml
+    uses: ./.github/workflows/deploy-production-infrastructure.yml
     secrets: inherit
 
   deploy_website_content:
