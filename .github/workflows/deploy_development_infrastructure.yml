@@ -9,6 +9,8 @@ on:
         value: ${{ jobs.deploy_development_infrastructure.outputs.rest_api_key }}
       bucket_name: 
         value: ${{ jobs.deploy_development_infrastructure.outputs.bucket_name }}
+      website_url:
+        value: ${{ jobs.deploy_development_infrastructure.outputs.cloudfront_domain_name }}
 
 jobs:
   deploy_development_infrastructure:
@@ -54,9 +56,11 @@ jobs:
         run: terraform output -raw bucket_name
 
       - name: Terraform Output (CloudFront Domain Name)
+        id: terraform_cloudfront_domain_name
         run: terraform output -raw cloudfront_domain_name
 
     outputs:
       rest_api_endpoint: ${{ steps.terraform_rest_api_endpoint.outputs.stdout }}
       rest_api_key: ${{ steps.terraform_rest_api_key.outputs.stdout }}
       bucket_name: ${{ steps.terraform_bucket_name.outputs.stdout }}
+      cloudfront_domain_name: ${{ steps.terraform_cloudfront_domain_name.stdout }}
