@@ -43,7 +43,7 @@ jobs:
           https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces
 
       - name: Test Message
-        run: echo ${{ steps.create-new-terraform-workspace.outputs }}
+        run: echo ${{ fromJson(steps.create-new-terraform-workspace.outputs) }}
 
       - name: Add AWS role to Terraform cloud workspace
         run: |
