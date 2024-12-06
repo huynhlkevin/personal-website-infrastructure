@@ -4,6 +4,14 @@ on:
   pull_request:
 
 jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
   deploy_development_infrastructure:
     uses: ./.github/workflows/deploy-development-infrastructure.yml
     secrets: inherit
