@@ -35,7 +35,7 @@ jobs:
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
       - name: Create new Terraform workspace
-        if: fromJson(steps.check-terraform-workspace-exists.outputs.result).data
+        if: !fromJson(steps.check-terraform-workspace-exists.outputs.result).data
         id: create-new-terraform-workspace
         run: |
           RESULT=$(curl \
@@ -54,7 +54,7 @@ jobs:
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
       - name: Add AWS role to Terraform cloud workspace
-        if: fromJson(steps.check-terraform-workspace-exists.outputs.result).data
+        if: !fromJson(steps.check-terraform-workspace-exists.outputs.result).data
         run: |
           curl \
           -X POST \
