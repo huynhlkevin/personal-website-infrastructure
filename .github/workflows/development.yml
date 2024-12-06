@@ -7,6 +7,8 @@ jobs:
   deploy_development_infrastructure:
     uses: ./.github/workflows/deploy-development-infrastructure.yml
     secrets: inherit
+    with:
+      tf_workspace: personal-website-infrastructure-${{ github.ref_name }}-${{ github.event.number }}
 
   deploy_website_content:
     uses: huynhlkevin/personal-website/.github/workflows/deploy-website-content.yml@master
@@ -19,3 +21,10 @@ jobs:
       rest_api_key: ${{ needs.deploy_development_infrastructure.outputs.rest_api_key }}
       bucket_name: ${{ needs.deploy_development_infrastructure.outputs.bucket_name }}
       production: false
+
+  destroy_development_infrastructure:
+    if: ${{ github.event.pull_request.merged }}
+    uses: ./.github/workflows/destroy-development-infrastructure.yml
+    secrets: inherit
+    with:
+      tf_workspace: personal-website-infrastructure-${{ github.ref_name }}-${{ github.event.number }}
