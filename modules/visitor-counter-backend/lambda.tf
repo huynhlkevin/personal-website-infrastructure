@@ -68,7 +68,7 @@ resource "aws_signer_signing_job" "this" {
   source {
     s3 {
       bucket  = aws_s3_bucket.this.id
-      key     = data.archive_file.this.output_path
+      key     = "unsigned/${data.archive_file.this.output_path}"
       version = aws_s3_object.this.version_id
     }
   }
