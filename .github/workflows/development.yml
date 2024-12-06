@@ -4,19 +4,11 @@ on:
   pull_request:
 
 jobs:
-  dump:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
   deploy_development_infrastructure:
     uses: ./.github/workflows/deploy-development-infrastructure.yml
     secrets: inherit
     with:
-      tf_workspace: personal-website-infrastructure-${{ github.ref_name }}
+      tf_workspace: personal-website-infrastructure-${{ github.event.number }}
 
   deploy_website_content:
     uses: huynhlkevin/personal-website/.github/workflows/deploy-website-content.yml@master
@@ -35,4 +27,4 @@ jobs:
     uses: ./.github/workflows/destroy-development-infrastructure.yml
     secrets: inherit
     with:
-      tf_workspace: personal-website-infrastructure-${{ github.ref_name }}
+      tf_workspace: personal-website-infrastructure-${{ github.event.number }}
