@@ -25,7 +25,17 @@ jobs:
       TF_WORKSPACE: ${{ inputs.tf_workspace }}
       
     steps:
+      - name: Check if Terraform workspace exists
+        id: check-terraform-workspace-exists
+        run: |
+          RESULT=$(curl \
+          -X GET \
+          -H "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
+          https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces/${{ env.TF_WORKSPACE }})
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+
       - name: Create new Terraform workspace
+        if: fromJson(steps.check-terraform-workspace-exists.outputs.result).data
         id: create-new-terraform-workspace
         run: |
           RESULT=$(curl \
@@ -44,6 +54,7 @@ jobs:
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
       - name: Add AWS role to Terraform cloud workspace
+        if: fromJson(steps.check-terraform-workspace-exists.outputs.result).data
         run: |
           curl \
           -X POST \

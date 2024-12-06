@@ -32,7 +32,7 @@ jobs:
         run: terraform destroy -auto-approve -input=false
 
       - name: Get Terraform workspace
-        id: get-terraform-workspace
+        id: check-terraform-workspace-exists
         run: |
           RESULT=$(curl \
           -X GET \
@@ -41,6 +41,7 @@ jobs:
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
       - name: Delete Terraform workspace
+        if: fromJson(steps.check-terraform-workspace-exists.outputs.result).data
         run: |
           curl \
           -X POST \
