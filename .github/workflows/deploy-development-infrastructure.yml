@@ -59,7 +59,7 @@ jobs:
                   }
                 }
               }' \
-          https://app.terraform.io/api/v2/workspaces/${{ fromJson(steps.create-new-terraform-workspace.outputs).data.id }}/vars
+          https://app.terraform.io/api/v2/workspaces/${{ fromJson(steps.create-new-terraform-workspace.outputs.stdout).data.id }}/vars
 
       - name: Checkout
         uses: actions/checkout@v4
