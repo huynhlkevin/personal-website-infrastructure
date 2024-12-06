@@ -28,7 +28,7 @@ jobs:
       - name: Create new Terraform workspace
         id: create-new-terraform-workspace
         run: |
-          curl \
+          RESULT=$(curl \
           -X POST \
           -H "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
           -H "Content-Type: application/vnd.api+json" \
@@ -40,10 +40,11 @@ jobs:
                   }
                 }
               }' \
-          https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces
+          https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces)
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
       - name: Test Message
-        run: echo ${{ fromJson(steps.create-new-terraform-workspace.outputs) }}
+        run: echo ${{ fromJson(steps.create-new-terraform-workspace.outputs.result) }}
 
       - name: Add AWS role to Terraform cloud workspace
         run: |
