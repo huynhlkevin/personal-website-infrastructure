@@ -20,7 +20,7 @@ resource "aws_lambda_function" "this" {
   }
 
   s3_bucket = aws_s3_bucket.this.id
-  s3_key = "signed/${data.archive_file.this.output_path}"
+  s3_key = aws_signer_signing_job.this.signed_object[0].s3[0].key
   code_signing_config_arn = aws_lambda_code_signing_config.this.arn
 }
 
