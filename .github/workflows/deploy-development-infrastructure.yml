@@ -43,9 +43,6 @@ jobs:
           https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces)
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
-      - name: Test Message
-        run: echo ${{ fromJson(steps.create-new-terraform-workspace.outputs.result) }}
-
       - name: Add AWS role to Terraform cloud workspace
         run: |
           curl \
@@ -63,7 +60,7 @@ jobs:
                   }
                 }
               }' \
-          https://app.terraform.io/api/v2/workspaces/${{ fromJson(steps.create-new-terraform-workspace.outputs).data.id }}/vars
+          https://app.terraform.io/api/v2/workspaces/${{ fromJson(steps.create-new-terraform-workspace.outputs.result).data.id }}/vars
 
       - name: Checkout
         uses: actions/checkout@v4
