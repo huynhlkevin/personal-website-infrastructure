@@ -7,8 +7,6 @@ jobs:
   deploy_development_infrastructure:
     uses: ./.github/workflows/deploy-development-infrastructure.yml
     secrets: inherit
-    with:
-      tf_workspace: personal-website-infrastructure-development-${{ github.event.number }}
 
   deploy_website_content:
     uses: huynhlkevin/personal-website/.github/workflows/deploy-website-content.yml@master
@@ -26,5 +24,3 @@ jobs:
     if: ${{ github.event.pull_request.merged }}
     uses: ./.github/workflows/destroy-development-infrastructure.yml
     secrets: inherit
-    with:
-      tf_workspace: personal-website-infrastructure-development-${{ github.event.number }}

@@ -2,10 +2,6 @@ name: Deploy Development Infrastructure
 
 on:
   workflow_call:
-    inputs:
-      tf_workspace:
-        type: string
-        required: true
     outputs:
       rest_api_endpoint: 
         value: ${{ jobs.deploy_development_infrastructure.outputs.rest_api_endpoint }}
@@ -22,7 +18,7 @@ jobs:
     environment: development
     env:
       TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-      TF_WORKSPACE: ${{ inputs.tf_workspace }}
+      TF_WORKSPACE: personal-website-infrastructure-development-${{ github.repository_id }}-${{ github.event.number }}
       
     steps:
       - name: Create new Terraform workspace
