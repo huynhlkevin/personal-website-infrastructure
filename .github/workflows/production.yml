@@ -2,7 +2,7 @@ name: Production
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
   deploy_production_infrastructure:
@@ -17,3 +17,9 @@ jobs:
       id-token: write
     with:
       production: true
+
+  run_tests_on_website:
+    uses: huynhlkevin/personal-website/.github/workflows/run-tests-on-website.yml@master
+    needs: [deploy_website_content]
+    with:
+      website_url: www.huynhlkevin.com    
