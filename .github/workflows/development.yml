@@ -23,6 +23,12 @@ jobs:
       frontend_automation_aws_role: ${{ needs.deploy_development_infrastructure.outputs.frontend_automation_aws_role }}
       production: false
 
+  run_tests_on_website:
+    uses: ./.github/workflows/run-tests-on-website.yml
+    needs: [deploy_development_infrastructure, deploy_website_content]
+    with:
+      website_url: ${{ needs.deploy_development_infrastructure.outputs.website_url }}
+
   destroy_development_infrastructure:
     if: github.event.pull_request.merged == true
     uses: ./.github/workflows/destroy-development-infrastructure.yml
