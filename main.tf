@@ -61,7 +61,7 @@ data "aws_iam_roles" "this" {
 }
 
 module "frontend_automation" {
-  count               = contains(data.aws_iam_roles.this, var.frontend_automation_role_name) ? 0 : 1
+  count               = contains(data.aws_iam_roles.this.names, var.frontend_automation_role_name) ? 0 : 1
   source              = "./modules/frontend-automation"
   role_name           = var.frontend_automation_role_name
   github_organization = "huynhlkevin"
