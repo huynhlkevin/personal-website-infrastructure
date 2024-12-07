@@ -24,7 +24,7 @@ jobs:
       production: false
 
   run_tests_on_website:
-    uses: ./.github/workflows/run-tests-on-website.yml
+    uses: huynhlkevin/personal-website/.github/workflows/run-tests-on-website.yml
     needs: [deploy_development_infrastructure, deploy_website_content]
     with:
       website_url: ${{ needs.deploy_development_infrastructure.outputs.website_url }}
