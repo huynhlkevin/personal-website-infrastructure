@@ -1,8 +1,8 @@
-resource "random_pet" "this_database" {}
+resource "random_pet" "database_table" {}
 
-resource "aws_dynamodb_table" "this" {
+resource "aws_dynamodb_table" "database" {
   billing_mode = "PAY_PER_REQUEST"
-  name         = random_pet.this_database.id
+  name         = random_pet.database_table.id
   hash_key     = "key"
 
   attribute {
@@ -11,8 +11,8 @@ resource "aws_dynamodb_table" "this" {
   }
 }
 
-resource "aws_dynamodb_resource_policy" "this" {
-  resource_arn = aws_dynamodb_table.this.arn
+resource "aws_dynamodb_resource_policy" "database" {
+  resource_arn = aws_dynamodb_table.database.arn
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -20,7 +20,7 @@ resource "aws_dynamodb_resource_policy" "this" {
         "Sid" : "Statement1",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : aws_iam_role.this.arn
+          "AWS" : aws_iam_role.lambda.arn
         },
         "Action" : [
           "dynamodb:GetItem",
@@ -28,7 +28,7 @@ resource "aws_dynamodb_resource_policy" "this" {
           "dynamodb:UpdateItem"
         ],
         "Resource" : [
-          aws_dynamodb_table.this.arn
+          aws_dynamodb_table.database.arn
         ]
       }
     ]

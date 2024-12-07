@@ -58,7 +58,6 @@ module "visitor_counter_backend" {
 
 module "frontend_automation" {
   source              = "./modules/frontend-automation"
-  role_name           = "FrontendAutomation"
   github_organization = "huynhlkevin"
   github_repository   = "personal-website*"
   bucket_id           = module.website.bucket_id

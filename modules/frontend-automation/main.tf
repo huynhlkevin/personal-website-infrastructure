@@ -1,23 +1,15 @@
-resource "aws_iam_openid_connect_provider" "github" {
+data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
-
-  client_id_list = [
-    "sts.amazonaws.com",
-  ]
-
-  thumbprint_list = ["d89e3bd43d5d909b47a18977aa9d5ce36cee184c"]
 }
 
-resource "aws_iam_role" "frontend_automation" {
-  name = var.role_name
-
+resource "aws_iam_role" "github" {
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : aws_iam_openid_connect_provider.github.arn
+          "Federated" : data.aws_iam_openid_connect_provider.github.arn
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
@@ -33,8 +25,8 @@ resource "aws_iam_role" "frontend_automation" {
   })
 }
 
-resource "aws_iam_role_policy" "frontend_automation" {
-  role = aws_iam_role.frontend_automation.id
+resource "aws_iam_role_policy" "github" {
+  role = aws_iam_role.github.id
 
   policy = jsonencode({
     "Version" : "2012-10-17",

@@ -2,14 +2,14 @@ name: Destroy Development Infrastructure
 
 on:
   workflow_call:
-
+      
 jobs:
   destroy_development_infrastructure:
     runs-on: ubuntu-latest
     environment: development
     env:
       TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+      TF_WORKSPACE: personal-website-infrastructure-development-${{ github.repository_id }}-${{ github.event.number }}
 
     steps:
       - name: Checkout
@@ -27,3 +27,20 @@ jobs:
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve -input=false
+
+      - name: Get Terraform workspace
+        id: get-terraform-workspace
+        run: |
+          RESULT=$(curl \
+          -X GET \
+          -H "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
+          https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces/${{ env.TF_WORKSPACE }})
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+
+      - name: Delete Terraform workspace
+        run: |
+          curl \
+          -X POST \
+          -H "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          https://app.terraform.io/api/v2/workspaces/${{ fromJson(steps.get-terraform-workspace.outputs.result).data.id }}/actions/safe-delete

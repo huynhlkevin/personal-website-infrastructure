@@ -11,6 +11,8 @@ on:
         value: ${{ jobs.deploy_development_infrastructure.outputs.bucket_name }}
       website_url:
         value: ${{ jobs.deploy_development_infrastructure.outputs.cloudfront_domain_name }}
+      frontend_automation_aws_role:
+        value: ${{ jobs.deploy_development_infrastructure.outputs.frontend_automation_aws_role }}
 
 jobs:
   deploy_development_infrastructure:
@@ -18,9 +20,47 @@ jobs:
     environment: development
     env:
       TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+      TF_WORKSPACE: personal-website-infrastructure-development-${{ github.repository_id }}-${{ github.event.number }}
       
     steps:
+      - name: Create new Terraform workspace
+        id: create-new-terraform-workspace
+        run: |
+          RESULT=$(curl \
+          -X POST \
+          -H "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          -d '{
+                "data": {
+                  "type": "workspace",
+                  "attributes": {
+                    "name": "${{ env.TF_WORKSPACE }}"
+                  }
+                }
+              }' \
+          https://app.terraform.io/api/v2/organizations/${{ env.TF_CLOUD_ORGANIZATION }}/workspaces)
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
+
+      - name: Add AWS role to Terraform cloud workspace
+        if: fromJson(steps.create-new-terraform-workspace.outputs.result).data
+        run: |
+          curl \
+          -X POST \
+          -H "Authorization: Bearer ${{ secrets.TF_API_TOKEN }}" \
+          -H "Content-Type: application/vnd.api+json" \
+          -d '{
+                "data": {
+                  "type": "vars",
+                  "attributes": {
+                    "key": "TFC_AWS_RUN_ROLE_ARN",
+                    "value": "${{ secrets.TFC_AWS_RUN_ROLE_ARN }}",
+                    "category": "env",
+                    "sensitive": true
+                  }
+                }
+              }' \
+          https://app.terraform.io/api/v2/workspaces/${{ fromJson(steps.create-new-terraform-workspace.outputs.result).data.id }}/vars
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -43,24 +83,13 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
 
-      - name: Terraform Output (API Endpoint)
-        id: terraform_rest_api_endpoint
-        run: terraform output -raw rest_api_invoke_url
-
-      - name: Terraform Output (API Key)
-        id: terraform_rest_api_key
-        run: terraform output -raw rest_api_key
-
-      - name: Terraform Output (Bucket name)
-        id: terraform_bucket_name
-        run: terraform output -raw bucket_name
-
-      - name: Terraform Output (CloudFront Domain Name)
-        id: terraform_cloudfront_domain_name
-        run: terraform output -raw cloudfront_domain_name
+      - name: Terraform Output
+        id: terraform-output
+        run: terraform output -json
 
     outputs:
-      rest_api_endpoint: ${{ steps.terraform_rest_api_endpoint.outputs.stdout }}
-      rest_api_key: ${{ steps.terraform_rest_api_key.outputs.stdout }}
-      bucket_name: ${{ steps.terraform_bucket_name.outputs.stdout }}
-      cloudfront_domain_name: ${{ steps.terraform_cloudfront_domain_name.outputs.stdout }}
+      rest_api_endpoint: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_invoke_url.value }}
+      rest_api_key: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_key.value }}
+      bucket_name: ${{ fromJson(steps.terraform-output.outputs.stdout).bucket_name.value }}
+      cloudfront_domain_name: ${{ fromJson(steps.terraform-output.outputs.stdout).cloudfront_domain_name.value }}
+      frontend_automation_aws_role: ${{ fromJson(steps.terraform-output.outputs.stdout).frontend_automation_aws_role.value }}

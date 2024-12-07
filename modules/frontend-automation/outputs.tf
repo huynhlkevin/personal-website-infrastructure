@@ -1,4 +1,4 @@
-output "role_name" {
-  description = "Role name that can be used in GitHub Actions when configurating AWS"
-  value       = aws_iam_role.frontend_automation.name
+output "role_arn" {
+  description = "AWS role arn that can be used in GitHub Actions automation"
+  value       = aws_iam_role.github.arn
 }
