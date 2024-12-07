@@ -56,9 +56,14 @@ module "visitor_counter_backend" {
   }
 }
 
+data "aws_iam_roles" "this" {
+  name_regex = var.frontend_automation_role_name
+}
+
 module "frontend_automation" {
+  count               = contains(data.aws_iam_roles.this, var.frontend_automation_role_name) ? 0 : 1
   source              = "./modules/frontend-automation"
-  role_name           = "FrontendAutomation"
+  role_name           = var.frontend_automation_role_name
   github_organization = "huynhlkevin"
   github_repository   = "personal-website*"
   bucket_id           = module.website.bucket_id
