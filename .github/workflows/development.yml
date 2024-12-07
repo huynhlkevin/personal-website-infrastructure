@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy_development_infrastructure:
-    if: !github.event.pull_request.merged
+    if: github.event.pull_request.merged == false
     uses: ./.github/workflows/deploy-development-infrastructure.yml
     secrets: inherit
 
@@ -24,6 +24,6 @@ jobs:
       production: false
 
   destroy_development_infrastructure:
-    if: github.event.pull_request.merged
+    if: github.event.pull_request.merged == true
     uses: ./.github/workflows/destroy-development-infrastructure.yml
     secrets: inherit
