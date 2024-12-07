@@ -9,9 +9,3 @@ variable "DOMAIN_NAME" {
   type        = string
   default     = ""
 }
-
-variable "frontend_automation_role_name" {
-  description = "Name used for frontend automation role"
-  type        = string
-  default     = "FrontendAutomation"
-}
