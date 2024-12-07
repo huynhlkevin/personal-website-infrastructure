@@ -1,28 +1,28 @@
-data "template_file" "this" {
+data "template_file" "api" {
   template = file(var.rest_api.path)
 
   vars = {
-    lambda_arn                  = aws_lambda_function.this.arn
+    lambda_arn                  = aws_lambda_function.lambda.arn
     access_control_allow_origin = "https://${var.access_control_allow_origin}"
   }
 }
 
-resource "random_pet" "this_api" {}
+resource "random_pet" "api_gateway" {}
 
-resource "aws_api_gateway_rest_api" "this" {
-  name = random_pet.this_api.id
-  body = data.template_file.this.rendered
+resource "aws_api_gateway_rest_api" "api" {
+  name = random_pet.api_gateway.id
+  body = data.template_file.api.rendered
 
   endpoint_configuration {
     types = ["REGIONAL"]
   }
 }
 
-resource "aws_api_gateway_deployment" "this" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
+resource "aws_api_gateway_deployment" "api" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.this.body))
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api.body))
   }
 
   lifecycle {
@@ -30,17 +30,17 @@ resource "aws_api_gateway_deployment" "this" {
   }
 }
 
-resource "random_pet" "this_stage" {}
+resource "random_pet" "api_stage" {}
 
-resource "aws_api_gateway_stage" "this" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  stage_name    = random_pet.this_stage.id
-  deployment_id = aws_api_gateway_deployment.this.id
+resource "aws_api_gateway_stage" "api" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  stage_name    = random_pet.api_stage.id
+  deployment_id = aws_api_gateway_deployment.api.id
 }
 
-resource "aws_api_gateway_method_settings" "this" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-  stage_name  = aws_api_gateway_stage.this.stage_name
+resource "aws_api_gateway_method_settings" "api" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_stage.api.stage_name
   method_path = "*/*"
 
   settings {
@@ -49,20 +49,20 @@ resource "aws_api_gateway_method_settings" "this" {
   }
 }
 
-resource "random_pet" "this_api_key" {}
+resource "random_pet" "api_key" {}
 
-resource "aws_api_gateway_api_key" "this" {
-  name = random_pet.this_api_key.id
+resource "aws_api_gateway_api_key" "api" {
+  name = random_pet.api_key.id
 }
 
-resource "random_pet" "this_usage_plan" {}
+resource "random_pet" "usage_plan" {}
 
-resource "aws_api_gateway_usage_plan" "this" {
-  name = random_pet.this_usage_plan.id
+resource "aws_api_gateway_usage_plan" "api" {
+  name = random_pet.usage_plan.id
 
   api_stages {
-    api_id = aws_api_gateway_rest_api.this.id
-    stage  = aws_api_gateway_stage.this.stage_name
+    api_id = aws_api_gateway_rest_api.api.id
+    stage  = aws_api_gateway_stage.api.stage_name
   }
 
   quota_settings {
@@ -76,8 +76,8 @@ resource "aws_api_gateway_usage_plan" "this" {
   }
 }
 
-resource "aws_api_gateway_usage_plan_key" "this" {
-  key_id        = aws_api_gateway_api_key.this.id
+resource "aws_api_gateway_usage_plan_key" "api" {
+  key_id        = aws_api_gateway_api_key.api.id
   key_type      = "API_KEY"
-  usage_plan_id = aws_api_gateway_usage_plan.this.id
+  usage_plan_id = aws_api_gateway_usage_plan.api.id
 }
