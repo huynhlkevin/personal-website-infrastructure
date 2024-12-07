@@ -20,7 +20,7 @@ resource "aws_dynamodb_resource_policy" "this" {
         "Sid" : "Statement1",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : aws_iam_role.this.arn
+          "AWS" : aws_iam_role.lambda.arn
         },
         "Action" : [
           "dynamodb:GetItem",

@@ -8,7 +8,7 @@ resource "random_pet" "this_lambda_function" {}
 
 resource "aws_lambda_function" "this" {
   function_name    = random_pet.this_lambda_function.id
-  role             = aws_iam_role.this.arn
+  role             = aws_iam_role.lambda.arn
   handler          = var.lambda_code.handler
   runtime          = "python3.13"
 
@@ -31,7 +31,7 @@ resource "aws_lambda_permission" "this" {
   source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*/POST/"
 }
 
-resource "aws_iam_role" "this" {
+resource "aws_iam_role" "lambda" {
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
