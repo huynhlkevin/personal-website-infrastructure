@@ -23,7 +23,7 @@ output "bucket_name" {
 }
 
 output "frontend_automation_aws_role" {
-  description = "AWS role name that can be used in GitHub Actions automation"
-  value       = module.frontend_automation.role_name
+  description = "AWS role arn that can be used in GitHub Actions automation"
+  value       = module.frontend_automation.role_arn
   sensitive   = true
 }
