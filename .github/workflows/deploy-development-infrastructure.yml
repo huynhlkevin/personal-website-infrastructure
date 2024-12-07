@@ -92,4 +92,4 @@ jobs:
       rest_api_key: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_key.value }}
       bucket_name: ${{ fromJson(steps.terraform-output.outputs.stdout).bucket_name.value }}
       cloudfront_domain_name: ${{ fromJson(steps.terraform-output.outputs.stdout).cloudfront_domain_name.value }}
-      frontend_automation_aws_role: ${{ fromJson(steps.terraform-output.outputs.stdout).frontend_automation_role_name.value }}
+      frontend_automation_aws_role: ${{ fromJson(steps.terraform-output.outputs.stdout).frontend_automation_aws_role.value }}
