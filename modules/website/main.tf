@@ -40,6 +40,11 @@ resource "aws_cloudfront_distribution" "cloudfront" {
     cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
     target_origin_id       = aws_s3_bucket.bucket.bucket_regional_domain_name
     viewer_protocol_policy = "redirect-to-https"
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_rewrite.arn
+    }
   }
 
   origin {
@@ -68,3 +73,12 @@ resource "aws_cloudfront_origin_access_control" "oac" {
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
 }
+
+resource "random_pet" "url_rewrite" {}
+
+resource "aws_cloudfront_function" "url_rewrite" {
+  name    = random_pet.bucket.id
+  code    = file("./resources/cloudfront/url-rewrite.js")
+  runtime = "cloudfront-js-2.0"
+}
+

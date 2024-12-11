@@ -7,10 +7,10 @@ data "archive_file" "lambda" {
 resource "random_pet" "lambda" {}
 
 resource "aws_lambda_function" "lambda" {
-  function_name    = random_pet.lambda.id
-  role             = aws_iam_role.lambda.arn
-  handler          = var.lambda_code.handler
-  runtime          = "python3.13"
+  function_name = random_pet.lambda.id
+  role          = aws_iam_role.lambda.arn
+  handler       = var.lambda_code.handler
+  runtime       = "python3.13"
 
   environment {
     variables = {
@@ -19,8 +19,8 @@ resource "aws_lambda_function" "lambda" {
     }
   }
 
-  s3_bucket = aws_s3_bucket.lambda.id
-  s3_key = aws_signer_signing_job.lambda.signed_object[0].s3[0].key
+  s3_bucket               = aws_s3_bucket.lambda.id
+  s3_key                  = aws_signer_signing_job.lambda.signed_object[0].s3[0].key
   code_signing_config_arn = aws_lambda_code_signing_config.lambda.arn
 }
 
@@ -96,7 +96,7 @@ resource "aws_s3_bucket_versioning" "lambda" {
 }
 
 resource "aws_s3_object" "lambda" {
-    bucket = aws_s3_bucket.lambda.id
-    key = "unsigned/${data.archive_file.lambda.output_path}"
-    source = data.archive_file.lambda.output_path
+  bucket = aws_s3_bucket.lambda.id
+  key    = "unsigned/${data.archive_file.lambda.output_path}"
+  source = data.archive_file.lambda.output_path
 }
