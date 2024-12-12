@@ -22,6 +22,7 @@ resource "aws_lambda_function" "lambda" {
   s3_bucket               = aws_s3_bucket.lambda.id
   s3_key                  = aws_signer_signing_job.lambda.signed_object[0].s3[0].key
   code_signing_config_arn = aws_lambda_code_signing_config.lambda.arn
+  source_code_hash        = filebase64sha256(aws_s3_object.lambda.source)
 }
 
 resource "aws_lambda_permission" "http_method" {
