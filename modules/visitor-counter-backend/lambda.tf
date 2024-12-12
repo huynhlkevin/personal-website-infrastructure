@@ -24,11 +24,12 @@ resource "aws_lambda_function" "lambda" {
   code_signing_config_arn = aws_lambda_code_signing_config.lambda.arn
 }
 
-resource "aws_lambda_permission" "lambda" {
+resource "aws_lambda_permission" "http_method" {
+  for_each      = toset(["GET", "POST"])
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/POST/"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/${each.key}/"
 }
 
 resource "aws_iam_role" "lambda" {
