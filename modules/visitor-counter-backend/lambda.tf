@@ -98,7 +98,8 @@ resource "aws_s3_bucket_versioning" "lambda" {
 }
 
 resource "aws_s3_object" "lambda" {
-  bucket = aws_s3_bucket.lambda.id
-  key    = "unsigned/${data.archive_file.lambda.output_path}"
-  source = data.archive_file.lambda.output_path
+  bucket      = aws_s3_bucket.lambda.id
+  key         = "unsigned/${data.archive_file.lambda.output_path}"
+  source      = data.archive_file.lambda.output_path
+  source_hash = filemd5(data.archive_file.lambda.output_path)
 }
