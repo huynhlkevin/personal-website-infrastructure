@@ -32,6 +32,36 @@
           "contentHandling" : "CONVERT_TO_TEXT"
         }
       },
+      "get" : {
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Empty"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "api_key" : [ ]
+        } ],
+        "x-amazon-apigateway-integration" : {
+          "type" : "aws_proxy",
+          "httpMethod" : "GET",
+          "uri" : "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/${lambda_arn}/invocations",
+          "responses" : {
+            "default" : {
+              "statusCode" : "200"
+            }
+          },
+          "passthroughBehavior" : "when_no_match",
+          "timeoutInMillis" : 29000,
+          "contentHandling" : "CONVERT_TO_TEXT"
+        }
+      },
       "options" : {
         "responses" : {
           "200" : {
