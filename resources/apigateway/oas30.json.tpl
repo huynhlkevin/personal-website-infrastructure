@@ -50,7 +50,7 @@
         } ],
         "x-amazon-apigateway-integration" : {
           "type" : "aws_proxy",
-          "httpMethod" : "GET",
+          "httpMethod" : "POST",
           "uri" : "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/${lambda_arn}/invocations",
           "responses" : {
             "default" : {
