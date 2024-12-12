@@ -6,7 +6,7 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["visitor_table_name"])
 
 def lambda_handler(event, context):
-    if event.httpMethod == "POST":
+    if event["httpMethod"] == "POST":
         if visitorCounterExists():
             incrementVisitorCounterValue()
         else:
@@ -34,7 +34,7 @@ def createHeaders(event):
     return {
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Origin": os.environ["access_control_allow_origin"],
-        "Access-Control-Allow-Methods": event.httpMethod
+        "Access-Control-Allow-Methods": event["httpMethod"]
     }
 
 def visitorCounterExists():
