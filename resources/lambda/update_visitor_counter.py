@@ -6,23 +6,35 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["visitor_table_name"])
 
 def lambda_handler(event, context):
-
-    if visitorCounterExists():
-        incrementVisitorCounterValue()
+    if event.httpMethod == "POST":
+        if visitorCounterExists():
+            incrementVisitorCounterValue()
+        else:
+            createVisitorCounterItem()
+        return {
+            "statusCode": 200,
+            "headers": createHeaders(event),
+            "body": json.dumps({
+                "message": "Successfully updated visitor count.",
+                "data": int(getVisitorCounterValue())
+            })
+        }
     else:
-        createVisitorCounterItem()
+        return {
+            "statusCode": 200,
+            "headers": createHeaders(event),
+            "body": json.dumps({
+                "message": "Successfully retrieved visitor count.",
+                "data": int(getVisitorCounterValue())
+            })
+        }
 
+
+def createHeaders(event):
     return {
-        "statusCode": 200,
-        "headers": {
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": os.environ["access_control_allow_origin"],
-            "Access-Control-Allow-Methods": "POST"
-        },
-        "body": json.dumps({
-            "message": "Successfully updated visitor count.",
-            "data": int(getVisitorCounterValue())
-        })
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": os.environ["access_control_allow_origin"],
+        "Access-Control-Allow-Methods": event.httpMethod
     }
 
 def visitorCounterExists():
