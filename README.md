@@ -6,7 +6,7 @@ This project uses [Terraform](https://www.terraform.io/) to set up the infrastru
 
 ## Modules
 
-### DNS-Configuration
+### DNS Configuration
 
 This module sets up DNS records, DNSSEC, and redirect rules on Cloudflare. It also sets up the CloudFront certificate.
 
