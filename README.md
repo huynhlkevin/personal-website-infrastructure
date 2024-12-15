@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project uses [Terraform](https://www.terraform.io/) to set up the infrastructure needed for my personal website.  The service providers used are [Amazon Web Services](https://aws.amazon.com/), [Cloudflare](https://www.cloudflare.com/), [GitHub](https://github.com/), and [HCP Terraform](https://app.terraform.io/).
+This project uses [Terraform](https://www.terraform.io/) to set up the infrastructure needed for my personal website.  The service providers used are [Amazon Web Services](https://aws.amazon.com/), [Cloudflare](https://www.cloudflare.com/), [GitHub](https://github.com/), and [Terraform Cloud](https://app.terraform.io/). This repository's workflow relies on reusable workflows from https://github.com/huynhlkevin/personal-website.
 
 ## Modules
 
