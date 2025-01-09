@@ -3,19 +3,19 @@ name: Deploy Development Infrastructure
 on:
   workflow_call:
     outputs:
-      rest_api_endpoint: 
-        value: ${{ jobs.deploy_development_infrastructure.outputs.rest_api_endpoint }}
-      rest_api_key: 
-        value: ${{ jobs.deploy_development_infrastructure.outputs.rest_api_key }}
-      bucket_name: 
-        value: ${{ jobs.deploy_development_infrastructure.outputs.bucket_name }}
-      website_url:
-        value: ${{ jobs.deploy_development_infrastructure.outputs.cloudfront_domain_name }}
-      frontend_automation_aws_role:
-        value: ${{ jobs.deploy_development_infrastructure.outputs.frontend_automation_aws_role }}
+      rest-api-endpoint: 
+        value: ${{ jobs.deploy-development-infrastructure.outputs.rest-api-endpoint }}
+      rest-api-key: 
+        value: ${{ jobs.deploy-development-infrastructure.outputs.rest-api-key }}
+      bucket-name: 
+        value: ${{ jobs.deploy-development-infrastructure.outputs.bucket-name }}
+      website-url:
+        value: ${{ jobs.deploy-development-infrastructure.outputs.cloudfront-domain-name }}
+      frontend-automation-aws-role:
+        value: ${{ jobs.deploy-development-infrastructure.outputs.frontend-automation-aws-role }}
 
 jobs:
-  deploy_development_infrastructure:
+  deploy-development-infrastructure:
     runs-on: ubuntu-latest
     environment: development
     env:
@@ -88,8 +88,8 @@ jobs:
         run: terraform output -json
 
     outputs:
-      rest_api_endpoint: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_invoke_url.value }}
-      rest_api_key: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_key.value }}
-      bucket_name: ${{ fromJson(steps.terraform-output.outputs.stdout).bucket_name.value }}
-      cloudfront_domain_name: ${{ fromJson(steps.terraform-output.outputs.stdout).cloudfront_domain_name.value }}
-      frontend_automation_aws_role: ${{ fromJson(steps.terraform-output.outputs.stdout).frontend_automation_aws_role.value }}
+      rest-api-endpoint: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_invoke_url.value }}
+      rest-api-key: ${{ fromJson(steps.terraform-output.outputs.stdout).rest_api_key.value }}
+      bucket-name: ${{ fromJson(steps.terraform-output.outputs.stdout).bucket_name.value }}
+      cloudfront-domain-name: ${{ fromJson(steps.terraform-output.outputs.stdout).cloudfront_domain_name.value }}
+      frontend-automation-aws-role: ${{ fromJson(steps.terraform-output.outputs.stdout).frontend_automation_aws_role.value }}

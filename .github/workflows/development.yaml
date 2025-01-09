@@ -1,0 +1,38 @@
+name: Development
+
+on:
+  pull_request:
+    types: 
+      - opened
+      - closed
+      - synchronize
+
+jobs:
+  deploy-development-infrastructure:
+    if: github.event.pull_request.merged == false
+    uses: ./.github/workflows/deploy-development-infrastructure.yaml
+    secrets: inherit
+
+  deploy-website-content:
+    uses: huynhlkevin/personal-website/.github/workflows/deploy-website-content.yaml@master
+    needs: [deploy-development-infrastructure]
+    secrets: inherit
+    permissions:
+      id-token: write
+    with:
+      rest-api-endpoint: ${{ needs.deploy-development-infrastructure.outputs.rest-api-endpoint }}
+      rest-api-key: ${{ needs.deploy-development-infrastructure.outputs.rest-api-key }}
+      bucket-name: ${{ needs.deploy-development-infrastructure.outputs.bucket-name }}
+      frontend-automation-aws-role: ${{ needs.deploy-development-infrastructure.outputs.frontend-automation-aws-role }}
+      production: false
+
+  run-tests-on-website:
+    uses: huynhlkevin/personal-website/.github/workflows/run-tests-on-website.yaml@master
+    needs: [deploy-development-infrastructure, deploy-website-content]
+    with:
+      website-url: ${{ needs.deploy-development-infrastructure.outputs.website-url }}
+
+  destroy-development-infrastructure:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/destroy-development-infrastructure.yaml
+    secrets: inherit

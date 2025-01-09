@@ -4,7 +4,7 @@ on:
   workflow_call:
       
 jobs:
-  destroy_development_infrastructure:
+  destroy-development-infrastructure:
     runs-on: ubuntu-latest
     environment: development
     env:

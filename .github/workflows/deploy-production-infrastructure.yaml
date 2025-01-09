@@ -4,7 +4,7 @@ on:
   workflow_call:
     
 jobs:
-  deploy_production_infrastructure:
+  deploy-production-infrastructure:
     runs-on: ubuntu-latest
     environment: production
     env:

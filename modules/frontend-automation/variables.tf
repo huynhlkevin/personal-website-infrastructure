@@ -12,3 +12,8 @@ variable "bucket_id" {
   description = "AWS S3 bucket destination of the frontend content"
   type        = string
 }
+
+variable "cloudfront_distribution_id" {
+  description = "CloudFront distribution of the frontend content"
+  type        = string
+}

@@ -57,10 +57,11 @@ module "visitor_counter_backend" {
 }
 
 module "frontend_automation" {
-  source              = "./modules/frontend-automation"
-  github_organization = "huynhlkevin"
-  github_repository   = "personal-website*"
-  bucket_id           = module.website.bucket_id
+  source                     = "./modules/frontend-automation"
+  github_organization        = "huynhlkevin"
+  github_repository          = "personal-website*"
+  bucket_id                  = module.website.bucket_id
+  cloudfront_distribution_id = module.website.cloudfront_distribution_id
 }
 
 module "dns_configuration" {
