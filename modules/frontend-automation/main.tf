@@ -51,7 +51,7 @@ resource "aws_iam_role_policy" "github" {
         "Action" : [
           "cloudfront:CreateInvalidation"
         ],
-        "Resource" : "arn:aws:s3:::${var.cloudfront_distribution_id}"
+        "Resource" : var.cloudfront_distribution_arn
       },
     ]
   })
