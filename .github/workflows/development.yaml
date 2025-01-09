@@ -2,34 +2,37 @@ name: Development
 
 on:
   pull_request:
-    types: [opened, closed, synchronize]
+    types: 
+      - opened
+      - closed
+      - synchronize
 
 jobs:
-  deploy_development_infrastructure:
+  deploy-development-infrastructure:
     if: github.event.pull_request.merged == false
     uses: ./.github/workflows/deploy-development-infrastructure.yaml
     secrets: inherit
 
-  deploy_website_content:
+  deploy-website-content:
     uses: huynhlkevin/personal-website/.github/workflows/deploy-website-content.yaml@master
-    needs: [deploy_development_infrastructure]
+    needs: [deploy-development-infrastructure]
     secrets: inherit
     permissions:
       id-token: write
     with:
-      rest_api_endpoint: ${{ needs.deploy_development_infrastructure.outputs.rest_api_endpoint }}
-      rest_api_key: ${{ needs.deploy_development_infrastructure.outputs.rest_api_key }}
-      bucket_name: ${{ needs.deploy_development_infrastructure.outputs.bucket_name }}
-      frontend_automation_aws_role: ${{ needs.deploy_development_infrastructure.outputs.frontend_automation_aws_role }}
+      rest_api_endpoint: ${{ needs.deploy-development-infrastructure.outputs.rest_api_endpoint }}
+      rest_api_key: ${{ needs.deploy-development-infrastructure.outputs.rest_api_key }}
+      bucket_name: ${{ needs.deploy-development-infrastructure.outputs.bucket_name }}
+      frontend_automation_aws_role: ${{ needs.deploy-development-infrastructure.outputs.frontend_automation_aws_role }}
       production: false
 
-  run_tests_on_website:
+  run-tests-on-website:
     uses: huynhlkevin/personal-website/.github/workflows/run-tests-on-website.yaml@master
-    needs: [deploy_development_infrastructure, deploy_website_content]
+    needs: [deploy-development-infrastructure, deploy-website-content]
     with:
-      website_url: ${{ needs.deploy_development_infrastructure.outputs.website_url }}
+      website_url: ${{ needs.deploy-development-infrastructure.outputs.website_url }}
 
-  destroy_development_infrastructure:
+  destroy-development-infrastructure:
     if: github.event.pull_request.merged == true
     uses: ./.github/workflows/destroy-development-infrastructure.yaml
     secrets: inherit
