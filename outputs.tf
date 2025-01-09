@@ -11,6 +11,7 @@ output "rest_api_invoke_url" {
 output "rest_api_key" {
   description = "REST API key"
   value       = module.visitor_counter_backend.rest_api.api_key
+  sensitive   = true
 }
 
 output "bucket_name" {
