@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     env:
-      TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+      TF_CLOUD_ORGANIZATION: ${{ vars.TF_CLOUD_ORGANIZATION }}
       TF_WORKSPACE: personal-website-infrastructure-development-${{ github.repository_id }}-${{ github.event.number }}
 
     steps:
