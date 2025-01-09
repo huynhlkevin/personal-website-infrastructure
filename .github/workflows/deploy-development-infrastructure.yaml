@@ -53,7 +53,7 @@ jobs:
                   "type": "vars",
                   "attributes": {
                     "key": "TFC_AWS_RUN_ROLE_ARN",
-                    "value": "${{ secrets.TFC_AWS_RUN_ROLE_ARN }}",
+                    "value": "${{ vars.TFC_AWS_RUN_ROLE_ARN }}",
                     "category": "env",
                     "sensitive": true
                   }
