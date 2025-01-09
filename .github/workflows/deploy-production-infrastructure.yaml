@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
-      TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+      TF_CLOUD_ORGANIZATION: ${{ vars.TF_CLOUD_ORGANIZATION }}
+      TF_WORKSPACE: ${{ vars.TF_WORKSPACE }}
 
     steps:
       - name: Checkout

@@ -13,7 +13,7 @@ variable "bucket_id" {
   type        = string
 }
 
-variable "cloudfront_distribution_id" {
+variable "cloudfront_distribution_arn" {
   description = "CloudFront distribution of the frontend content"
   type        = string
 }
